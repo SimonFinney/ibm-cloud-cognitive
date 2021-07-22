@@ -220,6 +220,21 @@ export let ActionBar = React.forwardRef(
   }
 );
 
+export const deprecatedProps = {
+  /**
+   * **Deprecated**
+   *
+   * children of the action bar (action bar items)
+   */
+  children: deprecateProp(
+    PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.element),
+      PropTypes.element,
+    ]),
+    'See documentation on the `actions` prop.'
+  ),
+};
+
 ActionBar.displayName = componentName;
 ActionBar.propTypes = {
   /**
@@ -237,32 +252,23 @@ ActionBar.propTypes = {
    *
    * Carbon Button API https://react.carbondesignsystem.com/?path=/docs/components-button--default#component-api
    */
-  actions: PropTypes.oneOfType([
-    PropTypes.arrayOf(
-      PropTypes.shape({
-        ...prepareProps(Button.propTypes, [
-          'kind',
-          'size',
-          'tooltipPosition',
-          'tooltipAlignment',
-        ]),
-        iconDescription: PropTypes.string.isRequired,
-        onClick: Button.propTypes.onClick,
-        renderIcon: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
-          .isRequired,
-      })
-    ),
-  ]),
-
-  /**
-   * children of the action bar (action bar items)
-   */
-  children: deprecateProp(
-    PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.element),
-      PropTypes.element,
-    ]),
-    'See documentation on the `actions` prop.'
+  actions: PropTypes.arrayOf(
+    PropTypes.shape({
+      ...prepareProps(Button.propTypes, [
+        // props not desired from Button.propTypes
+        'kind',
+        'size',
+        'tooltipPosition',
+        'tooltipAlignment',
+      ]),
+      // Additional props
+      key: PropTypes.string.isRequired,
+      // Redefine as form different  to Button and a key prop used by ActionBarItems
+      iconDescription: PropTypes.string.isRequired,
+      renderIcon: Button.propTypes.renderIcon.isRequired,
+      // We duplicate onClick here to improve DocGen in Storybook
+      onClick: PropTypes.func,
+    })
   ),
   // expects action bar item as array or in fragment,
   /**
@@ -285,6 +291,7 @@ ActionBar.propTypes = {
    * align tags to right of available space
    */
   rightAlign: PropTypes.bool,
+  ...deprecatedProps,
 };
 
 ActionBar.defaultProps = {
