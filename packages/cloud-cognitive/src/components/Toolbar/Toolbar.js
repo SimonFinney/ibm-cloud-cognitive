@@ -29,8 +29,17 @@ const { checkComponentEnabled, prefix } = pkg;
 const componentName = 'Toolbar';
 const blockClass = `${prefix}--toolbar`;
 
+function children({ children, isActive, setItem }) {
+  return Children.map(flattenChildren(children), (child) => {
+    return cloneElement(child, {
+      isActive,
+      setItem,
+    });
+  });
+}
+
 /** Toolbar. */
-export let Toolbar = forwardRef(({ children, className, ...rest }, ref) => {
+let Toolbar = forwardRef(({ children: c, className, ...rest }, ref) => {
   const isActive = useCallback((instanceId) => {
     return instanceId === instanceId;
   }, []);
@@ -58,12 +67,7 @@ export let Toolbar = forwardRef(({ children, className, ...rest }, ref) => {
   return (
     <div {...rest} className={cx(blockClass, className)} ref={r} role="toolbar">
       <div ref={container} className={`${blockClass}__container`}>
-        {Children.map(flattenChildren(children), (child) =>
-          cloneElement(child, {
-            isActive,
-            setItem,
-          })
-        )}
+        {children({ children: c, isActive, setItem })}
       </div>
 
       {overflowMenu && (
@@ -90,3 +94,5 @@ Toolbar.propTypes = {
 };
 
 Toolbar = checkComponentEnabled(Toolbar, componentName);
+
+export { children, Toolbar };

@@ -8,28 +8,23 @@
 import cx from 'classnames';
 import { node, string } from 'prop-types';
 
-import React, { Children, cloneElement, forwardRef } from 'react';
-import flattenChildren from 'react-keyed-flatten-children';
+import React, { forwardRef } from 'react';
 
 import { pkg } from '../../settings';
+import { children } from './Toolbar';
 
 const { checkComponentEnabled, prefix } = pkg;
 
 const componentName = 'ToolbarGroup';
 
 export let ToolbarGroup = forwardRef(
-  ({ className, children, isActive, setItem, ...rest }, ref) => {
+  ({ className, children: c, isActive, setItem, ...rest }, ref) => {
     return (
       <div
         ref={ref}
         className={cx(`${prefix}--toolbar__group`, className)}
         {...rest}>
-        {Children.map(flattenChildren(children), (child) =>
-          cloneElement(child, {
-            isActive,
-            setItem,
-          })
-        )}
+        {children({ children: c, isActive, setItem })}
       </div>
     );
   }

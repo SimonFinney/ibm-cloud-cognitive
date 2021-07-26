@@ -26,14 +26,16 @@ export let ToolbarItem = forwardRef(
     );
 
     useEffect(() => {
-      setItem({
-        instanceId,
-        weight,
-      });
+      if (setItem) {
+        setItem({
+          instanceId,
+          weight,
+        });
+      }
     }, [instanceId, setItem, weight]);
 
     return (
-      isActive(instanceId) && (
+      (!isActive || isActive(instanceId)) && (
         <Button
           {...rest}
           ref={ref}
