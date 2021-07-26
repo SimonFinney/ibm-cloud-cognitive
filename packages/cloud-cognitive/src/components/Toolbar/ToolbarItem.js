@@ -1,136 +1,64 @@
-import React, { useState } from 'react';
-import {
-  OverflowMenu,
-  OverflowMenuItem,
-  Button,
-} from 'carbon-components-react';
-import { Checkmark16 } from '@carbon/icons-react';
+/**
+ * Copyright IBM Corp. 2021, 2021
+ *
+ * This source code is licensed under the Apache-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-// Other standard imports.
-import PropTypes from 'prop-types';
+import { Button } from 'carbon-components-react';
+import setupGetInstanceId from 'carbon-components-react/es/tools/setupGetInstanceId';
+
 import cx from 'classnames';
+import { number, string } from 'prop-types';
+import React, { forwardRef, useEffect, useRef } from 'react';
+
 import { pkg } from '../../settings';
-import { prepareProps } from '../../global/js/utils/props-helper';
 
-// The block part of our conventional BEM class names (blockClass__E--M).
+const { checkComponentEnabled, prefix } = pkg;
+
 const componentName = 'ToolbarItem';
-const blockClass = `${pkg.prefix}--toolbar-item`;
+const getInstanceId = setupGetInstanceId();
 
-export let ToolbarItem = React.forwardRef(({ className, ...rest }, ref) => {
-  return (
-    <Button
-      {...{
-        ...rest,
-        ref,
-        className: cx(blockClass, className),
-        hasIconOnly: true,
-        kind: 'ghost',
-        size: 'field',
-        tooltipPosition: 'bottom',
-        tooltipAlignment: 'end',
-        type: 'button',
-      }}
-    />
-  );
-});
+export let ToolbarItem = forwardRef(
+  ({ className, isActive, setItem, weight, ...rest }, ref) => {
+    const { current: instanceId } = useRef(
+      `${componentName}__${getInstanceId()}`
+    );
 
-// const ToolbarItemColorPicker = () => {
-//   const [selectedColor, setSelectedColor] = useState('black');
-//   return (
-//     <>
-//       <OverflowMenu
-//         size="sm"
-//         renderIcon={() => (
-//           <div
-//             style={{
-//               borderBottom: `2px solid ${selectedColor}`,
-//               lineHeight: '0.9rem',
-//               width: '10px',
-//             }}>
-//             A
-//           </div>
-//         )}
-//         selectorPrimaryFocus={`.color-picker-selection`}>
-//         {[
-//           '#000000',
-//           '#6F6F6F',
-//           '#005FFF',
-//           '#0072C9',
-//           '#00832D',
-//           '#007F7A',
-//           '#972EFF',
-//           '#E40072',
-//           '#EE0017',
-//         ].map((color) => (
-//           <OverflowMenuItem
-//             style={{ backgroundColor: `${color}` }}
-//             itemText={color === selectedColor ? <Checkmark16 /> : ''}
-//             key={color}
-//             onClick={() => setSelectedColor(color)}
-//           />
-//         ))}
-//       </OverflowMenu>
-//     </>
-//   );
-// };
-// const ToolbarItemPaste = () => {
-//   return <h1>Paste</h1>;
-// };
+    useEffect(() => {
+      setItem({
+        instanceId,
+        weight,
+      });
+    }, [instanceId, setItem, weight]);
 
-ToolbarItem = pkg.checkComponentEnabled(ToolbarItem, componentName);
-
-// Props the user cannot change
-const reservedProps = [
-  'hasIconOnly',
-  'kind',
-  'size',
-  'tooltipPosition',
-  'tooltipAlignment',
-  'type',
-];
-// Base props on Carbon Button
-const propTypes = prepareProps(Button.propTypes, reservedProps);
-const defaultProps = prepareProps(Button.defaultProps, reservedProps);
+    return (
+      isActive(instanceId) && (
+        <Button
+          {...rest}
+          ref={ref}
+          className={cx(`${prefix}--toolbar-item`, className)}
+          kind="ghost"
+          size="md"
+          hasIconOnly
+        />
+      )
+    );
+  }
+);
 
 ToolbarItem.displayName = componentName;
 
 ToolbarItem.propTypes = {
-  /**
-   * The ...propTypes are copies of those from Button minus the props reserved for use by this component
-   */
-  ...propTypes,
-  /* ***************************************
-  /
-  /  The declarations below allow storybook & DocGen to produce documentation.
-  /  Some or all of them may be inherited from the underlying Carbon component.
-  /
-  / ****************************************/
-  /**
-   * Specify an optional className to be added to your Button
-   *
-   * (inherited from Carbon Button)
-   */
-  className: PropTypes.string,
-  /**
-   * If specifying the `renderIcon` prop, provide a description for that icon that can
-   * be read by screen readers
-   *
-   * (inherited from Carbon Button)
-   */
-  iconDescription: PropTypes.string,
-  /**
-   * Optional click handler
-   *
-   * (inherited from Carbon Button)
-   */
-  onClick: PropTypes.func,
-  /**
-   * Optional prop to allow overriding the icon rendering.
-   * Can be a React component class
-   *
-   * (inherited from Carbon Button)
-   */
-  renderIcon: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+  /** Provide an optional class to be applied to the containing node */
+  className: string,
+
+  /** Provide a weight to the `ToolbarItem` to determine whether it will move from the top level into the `OverflowMenu` */
+  weight: number,
 };
 
-ToolbarItem.defaultProps = { ...defaultProps };
+ToolbarItem.defaultProps = {
+  weight: 1,
+};
+
+ToolbarItem = checkComponentEnabled(ToolbarItem, componentName);

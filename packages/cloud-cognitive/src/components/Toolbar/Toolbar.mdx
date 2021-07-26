@@ -1,6 +1,13 @@
-import { Story, Props, Source, Preview } from '@storybook/addon-docs/blocks';
-import { pkg } from '../../settings';
+import {
+  ArgsTable,
+  Preview,
+  Source,
+  Story,
+} from '@storybook/addon-docs/blocks';
+
 import { getStorybookSlug } from '../../../config';
+import { pkg } from '../../settings';
+
 import { Toolbar } from '.';
 
 # Toolbar
@@ -13,16 +20,12 @@ import { Toolbar } from '.';
 
 ## Overview
 
-This component is an example
-
 ## Example usage
 
-Here it is in use.
-
 <Preview>
-  <Story id={getStorybookSlug(pkg, Toolbar.displayName, 'boxed-set')} />
+  <Story id={getStorybookSlug(pkg, Toolbar.displayName, 'toolbar')} />
 </Preview>
 
 ## Component API
 
-<Props />
+<ArgsTable />
