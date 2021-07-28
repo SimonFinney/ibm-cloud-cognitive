@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.62.6](https://github.com/carbon-design-system/ibm-cloud-cognitive/compare/@carbon/ibm-cloud-cognitive@0.62.5...@carbon/ibm-cloud-cognitive@0.62.6) (2021-07-27)
+
+
+### Bug Fixes
+
+* apikey story fix ([#1081](https://github.com/carbon-design-system/ibm-cloud-cognitive/issues/1081)) ([a225b3a](https://github.com/carbon-design-system/ibm-cloud-cognitive/commit/a225b3a291734d1d29d564708ae267aa4a202134))
+
+
+
+
+
+## [0.62.5](https://github.com/carbon-design-system/ibm-cloud-cognitive/compare/@carbon/ibm-cloud-cognitive@0.62.4...@carbon/ibm-cloud-cognitive@0.62.5) (2021-07-27)
+
+
+### Bug Fixes
+
+* update apikeymodal prop testing ([#1079](https://github.com/carbon-design-system/ibm-cloud-cognitive/issues/1079)) ([92a1aa3](https://github.com/carbon-design-system/ibm-cloud-cognitive/commit/92a1aa3b0f03c6663e83e52f586e28e1a9010232))
+
+
+
+
+
+## [0.62.4](https://github.com/carbon-design-system/ibm-cloud-cognitive/compare/@carbon/ibm-cloud-cognitive@0.62.3...@carbon/ibm-cloud-cognitive@0.62.4) (2021-07-27)
+
+
+### Bug Fixes
+
+* **CreateSidePanel:** title and subtitle padding is correct now ([#1080](https://github.com/carbon-design-system/ibm-cloud-cognitive/issues/1080)) ([9fcbe91](https://github.com/carbon-design-system/ibm-cloud-cognitive/commit/9fcbe9185c403f2b8bc76f79ed3b687ada9da254))
+
+
+
+
+
 ## [0.62.3](https://github.com/carbon-design-system/ibm-cloud-cognitive/compare/@carbon/ibm-cloud-cognitive@0.62.2...@carbon/ibm-cloud-cognitive@0.62.3) (2021-07-26)
 
 **Note:** Version bump only for package @carbon/ibm-cloud-cognitive
