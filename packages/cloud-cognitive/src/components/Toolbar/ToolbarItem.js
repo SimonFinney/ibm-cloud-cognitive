@@ -13,7 +13,6 @@ import { string } from 'prop-types';
 import React, { forwardRef, useEffect, useRef } from 'react';
 
 import { pkg } from '../../settings';
-import { getWidth } from './Toolbar';
 
 const { checkComponentEnabled, prefix } = pkg;
 
@@ -37,7 +36,7 @@ export let ToolbarItem = forwardRef(
         itemText,
         renderIcon,
         onClick,
-        width: getWidth(ref),
+        width: 40, // ref.current?.getBoundingClientRect().width,
       });
     }, [instanceId, itemText, onClick, ref, renderIcon, setItem]);
 

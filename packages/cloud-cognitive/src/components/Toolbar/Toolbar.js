@@ -25,7 +25,6 @@ import { pkg } from '../../settings';
 
 const { checkComponentEnabled, prefix } = pkg;
 
-const componentName = 'Toolbar';
 const blockClass = `${prefix}--toolbar`;
 
 function children({ children, isActive, setItem }) {
@@ -35,10 +34,6 @@ function children({ children, isActive, setItem }) {
       setItem,
     });
   });
-}
-
-function getWidth(ref) {
-  return ref.current?.getBoundingClientRect().width;
 }
 
 /** Toolbar. */
@@ -61,23 +56,27 @@ let Toolbar = forwardRef(({ children: c, className, ...rest }, ref) => {
   const overflowMenu = useRef();
 
   function onResize(width) {
-    let newOverflowMenuItems = overflowMenuItems;
-    const containerWidth = getWidth(container);
+    let lastItemToDisplay = 0;
 
-    if (width < containerWidth) {
-      newOverflowMenuItems = [
-        items[items.length - 1 - overflowMenuItems.length],
-        ...overflowMenuItems,
-      ];
-    } else if (width > containerWidth + getWidth(overflowMenu) * 2) {
-      newOverflowMenuItems = overflowMenuItems.slice(1);
-    }
+    items.reduce((totalWidth, { width: w }) => {
+      const newWidth = totalWidth + w;
 
-    setOverflowMenuItems(newOverflowMenuItems);
+      if (newWidth < width) {
+        lastItemToDisplay++;
+      }
+
+      return newWidth;
+    }, 0);
+
+    setOverflowMenuItems(
+      lastItemToDisplay !== items.length
+        ? items.slice(lastItemToDisplay - 1)
+        : []
+    );
   }
 
   const { ref: r } = useResizeDetector({
-    onResize: useCallback(onResize, [items, overflowMenu, overflowMenuItems]),
+    onResize: useCallback(onResize, [items]),
     targetRef: ref,
   });
 
@@ -114,6 +113,7 @@ let Toolbar = forwardRef(({ children: c, className, ...rest }, ref) => {
   );
 });
 
+const componentName = 'Toolbar';
 Toolbar.displayName = componentName;
 
 Toolbar.propTypes = {
@@ -126,4 +126,4 @@ Toolbar.propTypes = {
 
 Toolbar = checkComponentEnabled(Toolbar, componentName);
 
-export { blockClass, children, getWidth, Toolbar };
+export { blockClass, children, Toolbar };
