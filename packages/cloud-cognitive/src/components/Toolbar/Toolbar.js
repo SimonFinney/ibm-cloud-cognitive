@@ -22,7 +22,6 @@ import flattenChildren from 'react-keyed-flatten-children';
 import { useResizeDetector } from 'react-resize-detector';
 
 import { pkg } from '../../settings';
-import { ToolbarGroup } from '.';
 
 const { checkComponentEnabled, prefix } = pkg;
 
@@ -38,46 +37,78 @@ function children({ children, isActive, setItem }) {
   });
 }
 
+function getWidth(ref) {
+  return ref.current?.getBoundingClientRect().width;
+}
+
 /** Toolbar. */
 let Toolbar = forwardRef(({ children: c, className, ...rest }, ref) => {
-  const isActive = useCallback((instanceId) => {
-    return instanceId === instanceId;
-  }, []);
+  const [items, setItems] = useState([]);
+  const [overflowMenuItems, setOverflowMenuItems] = useState([]);
+
+  const isActive = useCallback(
+    (instanceId) => {
+      return !overflowMenuItems.some(({ instanceId: id }) => id === instanceId);
+    },
+    [overflowMenuItems]
+  );
 
   const setItem = useCallback((item) => {
     setItems((items) => [...items, item]);
   }, []);
 
   const container = useRef();
+  const overflowMenu = useRef();
 
   function onResize(width) {
-    setOverflowMenu(width < container.current.getBoundingClientRect().width);
+    let newOverflowMenuItems = overflowMenuItems;
+    const containerWidth = getWidth(container);
+
+    if (width < containerWidth) {
+      newOverflowMenuItems = [
+        items[items.length - 1 - overflowMenuItems.length],
+        ...overflowMenuItems,
+      ];
+    } else if (width > containerWidth + getWidth(overflowMenu) * 2) {
+      newOverflowMenuItems = overflowMenuItems.slice(1);
+    }
+
+    setOverflowMenuItems(newOverflowMenuItems);
   }
 
   const { ref: r } = useResizeDetector({
-    onResize: useCallback(onResize, []),
+    onResize: useCallback(onResize, [items, overflowMenu, overflowMenuItems]),
     targetRef: ref,
   });
 
-  const [items, setItems] = useState([]);
-  const [overflowMenu, setOverflowMenu] = useState();
-
-  console.log('items', items);
-
   return (
-    <div {...rest} className={cx(blockClass, className)} ref={r} role="toolbar">
+    <div {...rest} ref={r} className={cx(blockClass, className)} role="toolbar">
       <div ref={container} className={`${blockClass}__container`}>
         {children({ children: c, isActive, setItem })}
       </div>
 
-      {overflowMenu && (
-        <ToolbarGroup>
-          <OverflowMenu>
-            {items.map(({ instanceId }) => (
-              <OverflowMenuItem key={instanceId} itemText={instanceId} />
-            ))}
-          </OverflowMenu>
-        </ToolbarGroup>
+      {overflowMenuItems.length > 0 && (
+        <OverflowMenu
+          ref={overflowMenu}
+          className={`${blockClass}__overflow-menu`}
+          flipped>
+          {overflowMenuItems.map(
+            ({ instanceId, itemText, renderIcon: Icon, ...rest }) => (
+              <OverflowMenuItem
+                {...rest}
+                key={instanceId}
+                itemText={
+                  <>
+                    <Icon />
+                    <span className={`${blockClass}__overflow-menu__text`}>
+                      {itemText}
+                    </span>
+                  </>
+                }
+              />
+            )
+          )}
+        </OverflowMenu>
       )}
     </div>
   );
@@ -87,7 +118,7 @@ Toolbar.displayName = componentName;
 
 Toolbar.propTypes = {
   /** Provide the content of the `Toolbar` */
-  children: node,
+  children: node.isRequired,
 
   /** Provide an optional class to be applied to the containing node */
   className: string,
@@ -95,4 +126,4 @@ Toolbar.propTypes = {
 
 Toolbar = checkComponentEnabled(Toolbar, componentName);
 
-export { children, Toolbar };
+export { blockClass, children, getWidth, Toolbar };

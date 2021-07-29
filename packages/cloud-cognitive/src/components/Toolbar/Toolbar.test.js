@@ -1,118 +1,77 @@
 /**
- * Copyright IBM Corp. 2020, 2021
+ * Copyright IBM Corp. 2021, 2021
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import { render, screen } from '@testing-library/react'; // https://testing-library.com/docs/react-testing-library/intro
-import userEvent from '@testing-library/user-event';
+import { render as r, screen } from '@testing-library/react';
+import React, { createRef } from 'react';
 
-import { pkg } from '../../settings';
+import { Toolbar, ToolbarGroup, ToolbarItem } from '../..';
+import { blockClass } from './Toolbar';
 
-import uuidv4 from '../../global/js/utils/uuidv4';
+const { getByTestId } = screen;
+const { displayName } = Toolbar;
 
-import { Toolbar } from '.';
+describe(displayName, () => {
+  const { fn } = jest;
+  const { ResizeObserver } = window;
 
-const blockClass = `${pkg.prefix}--toolbar`;
-const componentName = Toolbar.displayName;
+  const dataTestId = 'dataTestId';
 
-const borderColor = '#acefed';
-const className = `class-${uuidv4()}`;
-const dataTestId = uuidv4();
-const primaryButtonLabel = `hello, world (${uuidv4()})`;
-const secondaryButtonLabel = `goodbye (${uuidv4()})`;
+  beforeAll(() => {
+    window.ResizeObserver = fn().mockImplementation(() => ({
+      disconnect: fn(),
+      observe: fn(),
+      unobserve: fn(),
+    }));
+  });
 
-// render an Toolbar with button labels and any other required props
-const renderComponent = ({ ...rest }) =>
-  render(
-    <Toolbar {...{ primaryButtonLabel, secondaryButtonLabel, ...rest }} />
-  );
+  afterAll(() => {
+    window.ResizeObserver = ResizeObserver;
+  });
 
-describe(componentName, () => {
-  it('renders a component Toolbar', () => {
-    renderComponent();
-    expect(screen.getByRole('main')).toHaveClass(blockClass);
+  function render(props) {
+    return r(
+      <Toolbar data-test-id={dataTestId} {...props}>
+        <ToolbarGroup>
+          <ToolbarItem>{ToolbarItem.displayName}</ToolbarItem>
+        </ToolbarGroup>
+      </Toolbar>
+    );
+  }
+
+  it('renders', () => {
+    render();
+
+    expect(getByTestId(dataTestId)).toHaveClass(blockClass);
   });
 
   it('has no accessibility violations', async () => {
-    const { container } = renderComponent();
-    await expect(container).toBeAccessible(componentName, 'scan_label');
+    const { container } = render();
+
+    await expect(container).toBeAccessible(displayName);
     await expect(container).toHaveNoAxeViolations();
   });
 
-  it(`renders the borderColor property`, () => {
-    renderComponent({ borderColor });
-    const style = window.getComputedStyle(screen.getByRole('main'));
-    // We'd prefer to test the actual border color style, but jsdom does not
-    // render css custom properties (https://github.com/jsdom/jsdom/issues/1895)
-    // so testing the property is the best we can do.
-    expect(style.getPropertyValue(`--${pkg.prefix}-border-color`)).toEqual(
-      borderColor
-    );
+  it('adds a class to the containing node', () => {
+    const className = 'class-name';
+    render({ className });
+
+    expect(getByTestId(dataTestId)).toHaveClass(className);
   });
 
-  it(`renders the boxedBorder property`, () => {
-    renderComponent({ boxedBorder: true });
-    expect(screen.getByRole('main')).toHaveClass(`${blockClass}--boxed-set`);
+  it('adds additional props to the containing node', () => {
+    render();
+
+    getByTestId(dataTestId);
   });
 
-  it('applies className to the containing node', () => {
-    renderComponent({ className });
-    expect(screen.getByRole('main')).toHaveClass(className);
-  });
+  it('forwards a reference to the appropriate DOM node', () => {
+    const ref = createRef();
+    render({ ref });
 
-  it(`renders the disabled property`, () => {
-    renderComponent({ disabled: true });
-    screen
-      .getAllByRole('button')
-      .forEach((button) => expect(button).toHaveProperty('disabled', true));
-  });
-
-  it('notifies a click on each button', () => {
-    const primaryHandler = jest.fn();
-    const secondaryHandler = jest.fn();
-    renderComponent({
-      onPrimaryClick: primaryHandler,
-      onSecondaryClick: secondaryHandler,
-    });
-    screen.getAllByRole('button').forEach(userEvent.click);
-    expect(primaryHandler).toBeCalledTimes(1);
-    expect(secondaryHandler).toBeCalledTimes(1);
-  });
-
-  it('renders the primaryButtonLabel and secondaryButtonLabel properties', () => {
-    renderComponent();
-    screen.getByText(primaryButtonLabel);
-    screen.getByText(secondaryButtonLabel);
-  });
-
-  it('renders the primaryKind and secondaryKind properties', () => {
-    renderComponent({ primaryKind: 'danger', secondaryKind: 'tertiary' });
-    expect(
-      screen.getByRole('button', { name: `danger ${primaryButtonLabel}` })
-    ).toHaveClass('bx--btn--danger');
-    expect(
-      screen.getByRole('button', { name: secondaryButtonLabel })
-    ).toHaveClass('bx--btn--tertiary');
-  });
-
-  it('renders the size property', () => {
-    renderComponent({ size: 'small' });
-    screen
-      .getAllByRole('button')
-      .forEach((button) => expect(button).toHaveClass('bx--btn--sm'));
-  });
-
-  it('adds additional properties to the containing node', () => {
-    renderComponent({ 'data-testid': dataTestId });
-    screen.getByTestId(dataTestId);
-  });
-
-  it('forwards a ref to an appropriate node', () => {
-    const ref = React.createRef();
-    renderComponent({ ref });
-    expect(ref.current).toEqual(screen.getByRole('main'));
+    expect(getByTestId(dataTestId)).toEqual(ref.current);
   });
 });

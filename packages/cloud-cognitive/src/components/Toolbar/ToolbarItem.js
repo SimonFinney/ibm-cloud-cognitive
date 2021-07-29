@@ -5,14 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Button } from 'carbon-components-react';
-import setupGetInstanceId from 'carbon-components-react/es/tools/setupGetInstanceId';
+import { Button, OverflowMenuItem } from 'carbon-components-react';
+import setupGetInstanceId from 'carbon-components-react/lib/tools/setupGetInstanceId'; // 'carbon-components-react/es/tools/setupGetInstanceId';
 
 import cx from 'classnames';
-import { number, string } from 'prop-types';
+import { string } from 'prop-types';
 import React, { forwardRef, useEffect, useRef } from 'react';
 
 import { pkg } from '../../settings';
+import { getWidth } from './Toolbar';
 
 const { checkComponentEnabled, prefix } = pkg;
 
@@ -20,27 +21,35 @@ const componentName = 'ToolbarItem';
 const getInstanceId = setupGetInstanceId();
 
 export let ToolbarItem = forwardRef(
-  ({ className, isActive, setItem, weight, ...rest }, ref) => {
+  (
+    { className, isActive, itemText, onClick, renderIcon, setItem, ...rest },
+    r
+  ) => {
     const { current: instanceId } = useRef(
       `${componentName}__${getInstanceId()}`
     );
 
+    const ref = useRef(r);
+
     useEffect(() => {
-      if (setItem) {
-        setItem({
-          instanceId,
-          weight,
-        });
-      }
-    }, [instanceId, setItem, weight]);
+      setItem({
+        instanceId,
+        itemText,
+        renderIcon,
+        onClick,
+        width: getWidth(ref),
+      });
+    }, [instanceId, itemText, onClick, ref, renderIcon, setItem]);
 
     return (
-      (!isActive || isActive(instanceId)) && (
+      isActive(instanceId) && (
         <Button
           {...rest}
           ref={ref}
           className={cx(`${prefix}--toolbar-item`, className)}
           kind="ghost"
+          onClick={onClick}
+          renderIcon={renderIcon}
           size="md"
           hasIconOnly
         />
@@ -51,16 +60,26 @@ export let ToolbarItem = forwardRef(
 
 ToolbarItem.displayName = componentName;
 
+const {
+  propTypes: { onClick, renderIcon },
+} = Button;
+
 ToolbarItem.propTypes = {
-  /** Provide an optional class to be applied to the containing node */
+  /** Provide an optional class to apply to the containing node */
   className: string,
 
-  /** Provide a weight to the `ToolbarItem` to determine whether it will move from the top level into the `OverflowMenu` */
-  weight: number,
+  /** The [text for the `ToolbarItem`](https://react.carbondesignsystem.com/?path=/docs/components-overflowmenu) */
+  itemText: OverflowMenuItem.propTypes.itemText,
+
+  /** Provide an [optional function to be called when the `ToolbarItem` is clicked](https://react.carbondesignsystem.com/?path=/docs/components-button) */
+  onClick,
+
+  /** Provide an [optional function to override icon rendering](https://react.carbondesignsystem.com/?path=/docs/components-button--default#button-rendericon) */
+  renderIcon,
 };
 
 ToolbarItem.defaultProps = {
-  weight: 1,
+  itemText: OverflowMenuItem.defaultProps.itemText,
 };
 
 ToolbarItem = checkComponentEnabled(ToolbarItem, componentName);

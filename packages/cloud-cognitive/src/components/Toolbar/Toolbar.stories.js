@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2020, 2021
+ * Copyright IBM Corp. 2021, 2021
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -29,7 +29,7 @@ import mdx from './Toolbar.mdx';
 
 const { displayName } = Toolbar;
 
-const width = 512;
+const width = 401;
 
 export default {
   title: `${getStorybookPrefix(pkg, displayName)}/${displayName}`,
@@ -58,21 +58,65 @@ function Template({ width }) {
     <main style={{ width }}>
       <Toolbar>
         <ToolbarGroup>
-          <ToolbarItem iconDescription="Save" renderIcon={Save16} />
-          <ToolbarItem iconDescription="Share" renderIcon={Share16} />
-          <ToolbarItem iconDescription="Upload" renderIcon={Upload16} />
-          <ToolbarItem iconDescription="Print" renderIcon={Printer16} />
+          <ToolbarItem
+            iconDescription="Save"
+            itemText="Save"
+            renderIcon={Save16}
+          />
+
+          <ToolbarItem
+            iconDescription="Share"
+            itemText="Share"
+            renderIcon={Share16}
+          />
+
+          <ToolbarItem
+            iconDescription="Upload"
+            itemText="Upload"
+            renderIcon={Upload16}
+          />
+
+          <ToolbarItem
+            iconDescription="Print"
+            itemText="Print"
+            renderIcon={Printer16}
+          />
         </ToolbarGroup>
 
         <ToolbarGroup>
-          <ToolbarItem iconDescription="Undo" renderIcon={Undo16} />
-          <ToolbarItem iconDescription="Redo" renderIcon={Redo16} />
-          <ToolbarItem iconDescription="Zoom in" renderIcon={ZoomIn16} />
-          <ToolbarItem iconDescription="Zoom out" renderIcon={ZoomOut16} />
-          <ToolbarItem iconDescription="Minimize" renderIcon={Minimize16} />
+          <ToolbarItem
+            iconDescription="Undo"
+            itemText="Undo"
+            renderIcon={Undo16}
+          />
+
+          <ToolbarItem
+            iconDescription="Redo"
+            itemText="Redo"
+            renderIcon={Redo16}
+          />
+
+          <ToolbarItem
+            iconDescription="Zoom in"
+            itemText="Zoom in"
+            renderIcon={ZoomIn16}
+          />
+
+          <ToolbarItem
+            iconDescription="Zoom out"
+            itemText="Zoom out"
+            renderIcon={ZoomOut16}
+          />
+
+          <ToolbarItem
+            iconDescription="Minimize"
+            itemText="Minimize"
+            renderIcon={Minimize16}
+          />
 
           <ToolbarItem
             iconDescription="Align horizontal center"
+            itemText="Align horizontal center"
             renderIcon={AlignHorizontalCenter16}
           />
         </ToolbarGroup>

@@ -21,9 +21,9 @@ export let ToolbarGroup = forwardRef(
   ({ className, children: c, isActive, setItem, ...rest }, ref) => {
     return (
       <div
+        {...rest}
         ref={ref}
-        className={cx(`${prefix}--toolbar__group`, className)}
-        {...rest}>
+        className={cx(`${prefix}--toolbar__group`, className)}>
         {children({ children: c, isActive, setItem })}
       </div>
     );

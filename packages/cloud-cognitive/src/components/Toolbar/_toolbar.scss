@@ -1,5 +1,5 @@
 //
-// Copyright IBM Corp. 2020, 2021
+// Copyright IBM Corp. 2021, 2021
 //
 // This source code is licensed under the Apache-2.0 license found in the
 // LICENSE file in the root directory of this source tree.
@@ -7,6 +7,7 @@
 
 @import '@carbon/import-once/scss/import-once';
 @import '@carbon/layout/scss/convert';
+@import '@carbon/layout/scss/spacing';
 @import '@carbon/themes/scss/tokens';
 
 @import 'carbon-components/scss/components/button/button';
@@ -16,6 +17,10 @@
 
 @include exports($name: toolbar) {
   $block-class: #{$pkg-prefix}--toolbar;
+  $border-style: carbon--rem(
+      $px: 1px,
+    )
+    solid $ui-03;
 
   .#{$block-class} {
     display: flex;
@@ -28,10 +33,20 @@
 
   .#{$block-class}__group {
     display: flex;
-    border-right: carbon--rem($px: 1px) solid $ui-03;
+    border-right: $border-style;
   }
 
   .#{$block-class}__group:last-of-type {
     border-right-width: 0;
+  }
+
+  .#{$block-class}__overflow-menu {
+    flex-shrink: 0;
+    border-right: $border-style;
+    border-left: $border-style;
+  }
+
+  .#{$block-class}__overflow-menu__text {
+    margin-left: $carbon--spacing-03;
   }
 }
