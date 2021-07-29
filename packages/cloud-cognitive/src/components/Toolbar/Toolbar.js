@@ -14,7 +14,6 @@ import React, {
   cloneElement,
   forwardRef,
   useCallback,
-  useRef,
   useState,
 } from 'react';
 
@@ -52,26 +51,21 @@ let Toolbar = forwardRef(({ children: c, className, ...rest }, ref) => {
     setItems((items) => [...items, item]);
   }, []);
 
-  const container = useRef();
-  const overflowMenu = useRef();
-
   function onResize(width) {
-    let lastItemToDisplay = 0;
+    const { visibleItems } = items.reduce(
+      ({ visibleItems, totalWidth: t }, { width: w }) => {
+        const totalWidth = t + w;
 
-    items.reduce((totalWidth, { width: w }) => {
-      const newWidth = totalWidth + w;
-
-      if (newWidth < width) {
-        lastItemToDisplay++;
-      }
-
-      return newWidth;
-    }, 0);
+        return {
+          visibleItems: totalWidth < width ? ++visibleItems : visibleItems,
+          totalWidth,
+        };
+      },
+      { totalWidth: 0, visibleItems: 0 }
+    );
 
     setOverflowMenuItems(
-      lastItemToDisplay !== items.length
-        ? items.slice(lastItemToDisplay - 1)
-        : []
+      visibleItems !== items.length ? items.slice(visibleItems) : []
     );
   }
 
@@ -82,15 +76,12 @@ let Toolbar = forwardRef(({ children: c, className, ...rest }, ref) => {
 
   return (
     <div {...rest} ref={r} className={cx(blockClass, className)} role="toolbar">
-      <div ref={container} className={`${blockClass}__container`}>
+      <div className={`${blockClass}__container`}>
         {children({ children: c, isActive, setItem })}
       </div>
 
       {overflowMenuItems.length > 0 && (
-        <OverflowMenu
-          ref={overflowMenu}
-          className={`${blockClass}__overflow-menu`}
-          flipped>
+        <OverflowMenu className={`${blockClass}__overflow-menu`} flipped>
           {overflowMenuItems.map(
             ({ instanceId, itemText, renderIcon: Icon, ...rest }) => (
               <OverflowMenuItem
