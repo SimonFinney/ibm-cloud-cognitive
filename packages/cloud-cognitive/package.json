@@ -1,7 +1,7 @@
 {
   "name": "@carbon/ibm-cloud-cognitive",
   "description": "Carbon for Cloud & Cognitive UI components",
-  "version": "0.62.6",
+  "version": "0.63.0",
   "license": "Apache-2.0",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -64,10 +64,10 @@
     "react-resize-detector": "^6.7.4"
   },
   "peerDependencies": {
-    "@carbon/icons-react": "^10.35.0",
+    "@carbon/icons-react": "^10.36.0",
     "@carbon/import-once": "^10.5.0",
-    "carbon-components": "^10.39.0",
-    "carbon-components-react": "^7.39.0",
+    "carbon-components": "^10.40.0",
+    "carbon-components-react": "^7.40.0",
     "carbon-icons": "^7.0.7",
     "react": "^16.8.6 || ^17.0.1",
     "react-dom": "^16.8.6 || ^17.0.1"
