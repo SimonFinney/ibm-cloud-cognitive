@@ -158,9 +158,15 @@
     }
   },
   "lint-staged": {
-    "packages/cloud-cognitive/**/*.{js,md,mdx,scss}": "yarn lint:prettier:files",
-    "packages/cloud-cognitive/**/*.js": "yarn lint:es:files",
-    "packages/cloud-cognitive/**/*.scss": "yarn lint:style:files",
+    "packages/cloud-cognitive/**/*.{js,md,mdx,scss}": [
+      "yarn prettier --write"
+    ],
+    "packages/cloud-cognitive/**/*.js": [
+      "yarn eslint --fix"
+    ],
+    "packages/cloud-cognitive/**/*.scss": [
+      "yarn stylelint"
+    ],
     "packages/cloud-cognitive/**/*": "yarn spellcheck:files"
   },
   "dependencies": {
