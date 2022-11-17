@@ -8,7 +8,7 @@
 > Carbon for IBM Cloud and Cognitive (@carbon/ibm-cloud-cognitive), and this
 > name can still be encountered in various places and historical logs.
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg)](#contributors-)
 [![Licensed under the Apache License, Version 2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/carbon-design-system/ibm-cloud-cognitive/blob/master/LICENSE)
 [![Build status](https://github.com/carbon-design-system/ibm-cloud-cognitive/actions/workflows/ci.yml/badge.svg)](https://github.com/carbon-design-system/ibm-cloud-cognitive/actions/workflows/ci.yml)
 [![Netlify status](https://img.shields.io/netlify/e8cd9972-0fc8-4c51-a911-e9a930ca6605)](https://app.netlify.com/sites/v11-carbon-for-ibm-products/deploys)
