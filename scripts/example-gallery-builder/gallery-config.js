@@ -143,20 +143,12 @@ const writeGalleryConfig = (galleryConfigPath, config) => {
 };
 
 const writeGalleryTests = (testPath, directories) => {
-  const dontTest = {
+  // TODO: remove these workarounds for non-standard examples
+  const ingoreExample = [
     //  example folder which should not be imported
-    // 'Import fails': { /* <-- directory name */
-    // skipImport: true, reason: 'Carbon v11 not supported in v1 repo.'
-    //  },
-    //  example folder which should not be tested but can be imported
-    // 'Test fails': { /* <-- directory name */
-    //   skipTest: true, reason: 'Test currently fails due to XYZ.'
-    //  },
-    'Carbon-v11-template': {
-      skipImport: true,
-      reason: 'Carbon v11 not supported in v1 repo.',
-    },
-  };
+    'Carbon-v11-template', // Carbon v11 not supported in v1 repo
+  ];
+  const skipExamples = []; // example folder names to be skipped
 
   const header = `/**
  * Copyright IBM Corp. 2020, 2023
@@ -175,36 +167,31 @@ import { init } from './test-common';
   const tests = [];
 
   directories.forEach((dir) => {
-    const skipImport = dontTest[dir]?.skipImport;
-    const skipTest = skipImport || dontTest[dir]?.skipTest;
-    const skipReason = dontTest[dir]?.reason;
+    const ignoreExamples = ingoreExample.includes(dir);
 
     const sanitizedDir = dir
       .replace(/(-|_)\w/g, (m) => m[1].toUpperCase())
       .replace(/./, (m) => m.toUpperCase());
 
-    if (skipImport) {
-      exampleImports.push(`/* ** SKIP IMPORT **, reason:  '${skipReason}' `);
+    const skipImport = `/* skipped import see 'example-gallery-builder'`;
+    if (ignoreExamples) {
+      exampleImports.push(`${skipImport} `);
     }
     exampleImports.push(
       `import { Example as ${sanitizedDir}Example } from './${dir}/src/Example/Example';`
     );
-    if (skipImport) {
+    if (ignoreExamples) {
       exampleImports.push(`*/`);
     }
 
-    const skipTestString = skipTest ? '.skip' : '';
-    let skipTestReason = skipTest
-      ? `  /* ** SKIP TEST **, reason: '${skipReason}' */\n`
-      : '';
+    const skipTest =
+      ignoreExamples || skipExamples.includes(dir) ? '.skip' : '';
 
-    if (!skipImport) {
-      tests.push(`${skipTestReason}  it${skipTestString}('${sanitizedDir} renders', () => {
+    tests.push(`  it${skipTest}('${sanitizedDir} renders', () => {
     render(<${sanitizedDir}Example />);
     // expect no errors int the console
     expect(console.error).not.toHaveBeenCalled();
   });`);
-    }
   });
 
   const preTest = `
