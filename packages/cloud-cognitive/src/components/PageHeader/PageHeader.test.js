@@ -221,7 +221,7 @@ describe('PageHeader', () => {
       id: 'uuidv4',
       mock: uuidv4.mockImplementation(() => 'test-id'),
     });
-    window.scrollTo = jest.spyOn(window, 'scrollTo').mockImplementation();
+    window.scrollTo = jest.fn();
     window.ResizeObserver = jest.fn().mockImplementation(() => ({
       observe: jest.fn(),
       unobserve: jest.fn(),
